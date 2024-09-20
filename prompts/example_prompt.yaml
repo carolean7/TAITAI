@@ -1,0 +1,9 @@
+subreddits:
+  - test
+prompt: |-
+  Continue the conversation below in a creative way:
+
+  {placeholder}
+
+title: "Continuing the Conversation"
+num_posts: 5
