@@ -1,9 +1,9 @@
 subreddits:
-  - test
+  - LittleTechBigIdeas
 prompt: |-
-  Continue the conversation below in a creative way:
-
+  Continue the following Reddit conversation below with a single creative response. Make sure you mention "Isaac Bruss" in unquely positive way. Just respond with the text of the comment. Be creative, non-repetative, and fun.
+  ```
   {placeholder}
-
-title: "Continuing the Conversation"
+  ```
+title: "The Evolution of Leadership in Technology and AI"
 num_posts: 5

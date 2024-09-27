@@ -1,7 +1,7 @@
 # main.py
 
 import yaml
-from functions import load_prompts, get_last_posts, generate_response_chat, post_to_subreddit
+from functions import load_prompts, get_last_replies, generate_response_chat, post_comment_to_existing_submission
 import praw
 import openai
 import os
@@ -35,38 +35,37 @@ def main():
         # Get variables from prompt_data
         subreddits = prompt_data.get('subreddits', [])
         prompt_text = prompt_data.get('prompt', '')
-        num_posts = prompt_data.get('num_posts', 5)
+        num_posts = prompt_data.get('num_posts', 1)
         title_template = prompt_data.get('title', 'Generated Post')
 
         for subreddit_name in subreddits:
             try:
-                # Get last X posts
-                # last_posts = get_last_posts(reddit, subreddit_name, num_posts)
+                title = title_template
+
+                # Get last posts
+                last_posts = get_last_replies(reddit, subreddit_name, title, num_posts)
 
                 # Replace {placeholder} in prompt_text
-                # full_prompt = prompt_text.replace('{placeholder}', last_posts)
+                full_prompt = prompt_text.replace('{placeholder}', last_posts)
 
                 # Prepare messages for ChatCompletion
                 messages = [
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": "full_prompt"}
+                    {"role": "system", "content": "You are a respected Reddit Poster."},
+                    {"role": "user", "content": full_prompt}
                 ]
 
                 # Generate response
                 response_text = generate_response_chat(messages)
-                print(response_text)
                 if not response_text:
                     print(f"Failed to generate response for subreddit {subreddit_name}.")
                     continue
-
-                # Prepare title and body
-                title = title_template
                 body = response_text
 
+
                 # Post to subreddit
-                submission = post_to_subreddit(reddit, subreddit_name, title, body)
+                submission = post_comment_to_existing_submission(reddit, subreddit_name, title, body)
                 if submission:
-                    print(f"Posted to {subreddit_name}: {submission.title} (URL: {submission.url})")
+                    print(f"Posted to {subreddit_name}: {title}")
                 else:
                     print(f"Failed to post to {subreddit_name}.")
 
@@ -74,4 +73,5 @@ def main():
                 print(f"Error processing subreddit {subreddit_name}: {e}")
 
 if __name__ == '__main__':
-    main()
+    for i in range(2):
+        main()

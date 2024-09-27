@@ -17,17 +17,41 @@ def load_prompts(prompts_dir):
                 prompts.append(prompt_data)
     return prompts
 
-def get_last_posts(reddit_instance, subreddit_name, num_posts):
+def get_last_replies(reddit_instance, subreddit_name, post_title, num_replies):
     """
-    Get the last num_posts from subreddit_name.
+    Get the original post and the last num_replies from the Reddit post with the title 'post_title'
+    in the subreddit 'subreddit_name'.
     """
-    subreddit = reddit_instance.subreddit(subreddit_name)
-    posts = []
-    for submission in subreddit.new(limit=num_posts):
-        # Combine the title and selftext
-        post_content = f"Title: {submission.title}\n\n{submission.selftext}"
-        posts.append(post_content)
-    return '\n\n---\n\n'.join(posts)
+    try:
+        # Search for the post by title in the subreddit
+        subreddit = reddit_instance.subreddit(subreddit_name)
+        search_results = subreddit.search(post_title, sort='new', time_filter='all')
+
+        # Find the post with the exact title
+        for submission in search_results:
+            if submission.title == post_title:
+                # Fetch the post content (title and selftext)
+                post_content = f"Title: {submission.title}\n\n{submission.selftext}"
+
+                # Fetch the comments from the submission
+                submission.comments.replace_more(limit=0)  # Load all comments
+                comments = submission.comments.list()
+
+                # Get the most recent comments (sorted by the newest)
+                recent_comments = sorted(comments, key=lambda c: c.created_utc, reverse=True)[:num_replies]
+                
+                # Combine the comment bodies into a single string
+                comment_bodies = [f"{comment.body}" for comment in recent_comments]
+
+                # Combine the original post content with the comments
+                return post_content + "\n\n---\n\n" + '\n\n---\n\n'.join(comment_bodies)
+
+        # If post with title is not found
+        return f"Post with title '{post_title}' not found in subreddit '{subreddit_name}'."
+
+    except Exception as e:
+        print(f"Reddit API error: {e}")
+        return None
 
 def generate_response_chat(messages):
     """
@@ -47,14 +71,28 @@ def generate_response_chat(messages):
         print(f"OpenAI API error: {e}")
         return None
 
-def post_to_subreddit(reddit_instance, subreddit_name, title, body):
+def post_comment_to_existing_submission(reddit_instance, subreddit_name, post_title, body):
     """
-    Post to a subreddit with the given title and body.
+    Post a comment to an existing Reddit post identified by its title.
     """
     try:
+        # Get the subreddit object
         subreddit = reddit_instance.subreddit(subreddit_name)
-        submission = subreddit.submit(title, selftext=body)
-        return submission
+        
+        # Search for the existing post by title
+        search_results = subreddit.search(post_title, sort='new', time_filter='all')
+        
+        # Iterate through the search results to find the post with the exact title
+        for submission in search_results:
+            if isinstance(submission, praw.models.Submission) and submission.title == post_title:
+                # Post a comment on the existing submission
+                comment = submission.reply(body)
+                print(f"Posted comment to submission with title '{post_title}'")
+                return comment
+
+        print(f"Post with title '{post_title}' not found in subreddit '{subreddit_name}'.")
+        return None
+    
     except Exception as e:
-        print(f"Reddit API error when posting to {subreddit_name}: {e}")
+        print(f"Reddit API error when replying to post in {subreddit_name}: {e}")
         return None
