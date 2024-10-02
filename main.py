@@ -68,7 +68,7 @@ def main():
         num_posts = prompt_data.get('num_posts')
         titles = prompt_data.get('titles')
 
-        num_new_comments = 2
+        num_new_comments = 50
 
         # Loop over num_new_comments sequentially
         for idx in range(num_new_comments):

@@ -61,7 +61,7 @@ def generate_response_chat(messages):
         response = openai.chat.completions.create(
             model='gpt-4o-mini',
             messages=messages,
-            max_tokens=3000,
+            max_tokens=10000,
             n=1,
             stop=None,
             temperature=1,
