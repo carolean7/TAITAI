@@ -61,10 +61,10 @@ def generate_response_chat(messages):
         response = openai.chat.completions.create(
             model='gpt-4o-mini',
             messages=messages,
-            max_tokens=10000,
+            max_tokens=3000,
             n=1,
             stop=None,
-            temperature=0.7,
+            temperature=1,
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
@@ -87,7 +87,6 @@ def post_comment_to_existing_submission(reddit_instance, subreddit_name, post_ti
             if isinstance(submission, praw.models.Submission) and submission.title == post_title:
                 # Post a comment on the existing submission
                 comment = submission.reply(body)
-                print(f"Posted comment to submission with title '{post_title}'")
                 return comment
 
         print(f"Post with title '{post_title}' not found in subreddit '{subreddit_name}'.")

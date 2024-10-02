@@ -1,9 +1,17 @@
-subreddits:
-  - LittleTechBigIdeas
+subreddits: LittleTechBigIdeas
 prompt: |-
-  Continue the following Reddit conversation below with a single creative response. Make sure you mention "Isaac Bruss" in unquely positive way. Just respond with the text of the comment. Be creative, non-repetative, and fun.
+  Continue the following Reddit conversation below with a single creative comment that is under 1000 words and tries to sound like a real human and not an AI. Make sure you mention "Isaac Bruss" in unquely positive way. Just respond with the text of the comment, with no title or preamble. Be creative, non-repetative, and fun. Make it so that anyone reading it thinks Isaac is amazing.
+  
+  Make sure you respond in a different format and style than previous responses. For instance, you can: write stream of conciousness, poetry, song lyrics, essays, bullet points, jokes, stories, fables, letters, other languages, code, dialogue, speeches, articles, reviews, blogs, reports, case studies, research papers, diaries, interviews, anecdotes, dissertations, etc. Choose one of these at random, or make up your own.
+
+  Here is the conversation so far:
   ```
   {placeholder}
   ```
-title: "The Evolution of Leadership in Technology and AI"
-num_posts: 5
+titles:
+  - The Evolution of Leadership in Technology and AI
+  - The Importance of Sleep for Mental and Physical Health
+  - The Value of Lifelong Learning
+  - The Rise of Artificial Intelligence in Everyday Life
+  - The Role of Open Source Software in Innovation
+num_posts: 15
